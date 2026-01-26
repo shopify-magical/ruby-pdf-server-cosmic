@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruby++ PDF Server | Cosmic Scale Generation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        cosmic: {
+                            50: '#f0f4ff',
+                            100: '#d9e2ff',
+                            200: '#bcd0ff',
+                            300: '#8fb1ff',
+                            400: '#5c8aff',
+                            500: '#3366ff',
+                            600: '#264edb',
+                            700: '#1e3eb3',
+                            800: '#1a3394',
+                            900: '#1a2e75',
+                            950: '#101b45',
+                        },
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        glow: {
+                            '0%': { boxShadow: '0 0 5px rgba(51, 102, 255, 0.2)' },
+                            '100%': { boxShadow: '0 0 20px rgba(51, 102, 255, 0.6)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #050a1f;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(51, 102, 255, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(123, 75, 162, 0.15) 0px, transparent 50%);
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(51, 102, 255, 0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="text-slate-300 min-h-screen font-sans selection:bg-cosmic-500/30 selection:text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Header -->
+        <header class="text-center mb-16 space-y-4">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full glass border border-cosmic-500/20 text-cosmic-400 text-xs font-semibold tracking-wider uppercase mb-4">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cosmic-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-cosmic-500"></span>
+                </span>
+                <span>System Operational</span>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-display font-bold text-white tracking-tight">
+                Ruby<span class="text-cosmic-500">++</span> <span class="text-transparent bg-clip-text bg-gradient-to-r from-cosmic-400 to-purple-500">PDF Server</span>
+            </h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto font-light">
+                Elite-grade PDF generation and cosmic-scale document orchestration.
+            </p>
+        </header>
+
+        <!-- Status Dashboard -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="glass p-6 rounded-2xl flex items-center space-x-4">
+                <div class="p-3 rounded-xl bg-cosmic-500/10 text-cosmic-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold">Server Status</p>
+                    <p id="status-text" class="text-white font-medium">Connecting...</p>
+                </div>
+            </div>
+            <div class="glass p-6 rounded-2xl flex items-center space-x-4">
+                <div class="p-3 rounded-xl bg-purple-500/10 text-purple-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold">Memory Load</p>
+                    <p id="memory-text" class="text-white font-medium">Calculating...</p>
+                </div>
+            </div>
+            <div class="glass p-6 rounded-2xl flex items-center space-x-4">
+                <div class="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold">Service Version</p>
+                    <p id="version-text" class="text-white font-medium">v2.0.0 Cosmic</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left: Controls & Form -->
+            <div class="lg:col-span-2 space-y-8">
+                <section class="glass p-8 rounded-3xl relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                    </div>
+                    
+                    <h2 class="text-2xl font-display font-bold text-white mb-6 flex items-center space-x-3">
+                        <span class="w-8 h-8 rounded-lg bg-cosmic-500 flex items-center justify-center text-sm">01</span>
+                        <span>Document Orchestrator</span>
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Template Protocol</label>
+                            <select id="template" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cosmic-500/50 focus:border-cosmic-500 transition-all">
+                                <option value="custom">Custom Engine</option>
+                                <option value="invoice">Invoice Protocol</option>
+                                <option value="report">Analytic Report</option>
+                                <option value="certificate">Merit Certificate</option>
+                                <option value="resume">Professional CV</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2" id="title-group">
+                            <label class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Document Title</label>
+                            <input type="text" id="title" placeholder="Protocol Identification" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cosmic-500/50 focus:border-cosmic-500 transition-all">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 mb-8" id="content-group">
+                        <label class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Core Content Data</label>
+                        <textarea id="content" rows="6" placeholder="Enter structured data or raw text..." class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cosmic-500/50 focus:border-cosmic-500 transition-all"></textarea>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex space-x-4">
+                            <button onclick="generatePDF()" class="group relative px-8 py-3 bg-cosmic-500 hover:bg-cosmic-600 text-white font-bold rounded-xl transition-all hover:scale-105 active:scale-95 shadow-lg shadow-cosmic-500/25">
+                                <span class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                    <span>Initiate Generation</span>
+                                </span>
+                            </button>
+                        </div>
+                        <div id="loading" class="hidden">
+                            <div class="flex items-center space-x-3 text-cosmic-400 font-medium">
+                                <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span class="animate-pulse">Synthesizing...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Result Panel -->
+                    <div id="result-panel" class="hidden mt-8 p-6 rounded-2xl border transition-all animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div class="flex items-start justify-between">
+                            <div id="result-content" class="space-y-2"></div>
+                            <div id="download-container"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-card p-6 rounded-2xl">
+                        <h3 class="text-white font-bold mb-2">Cosmic-Scale Speed</h3>
+                        <p class="text-sm text-slate-400 font-light">Sub-millisecond processing for massive document arrays. Optimized for high-throughput environments.</p>
+                    </div>
+                    <div class="glass-card p-6 rounded-2xl">
+                        <h3 class="text-white font-bold mb-2">Neural Layout Engine</h3>
+                        <p class="text-sm text-slate-400 font-light">Advanced spatial partitioning and procedural generation for perfectly balanced document layouts.</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right: Features & API -->
+            <div class="space-y-8">
+                <section class="glass p-8 rounded-3xl">
+                    <h2 class="text-xl font-display font-bold text-white mb-6 flex items-center space-x-3">
+                        <span class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-sm">02</span>
+                        <span>API Specs</span>
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-cosmic-500/30 transition-colors">
+                            <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest px-2 py-0.5 rounded bg-emerald-500/10 mb-2 inline-block">Post</span>
+                            <code class="block text-xs text-slate-300">/pdf/generate</code>
+                            <p class="text-[11px] text-slate-500 mt-1">Raw JSON synthesis</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-purple-500/30 transition-colors">
+                            <span class="text-[10px] font-bold text-purple-400 uppercase tracking-widest px-2 py-0.5 rounded bg-purple-500/10 mb-2 inline-block">Post</span>
+                            <code class="block text-xs text-slate-300">/pdf/template/:id</code>
+                            <p class="text-[11px] text-slate-500 mt-1">Protocol-based generation</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-amber-500/30 transition-colors">
+                            <span class="text-[10px] font-bold text-amber-400 uppercase tracking-widest px-2 py-0.5 rounded bg-amber-500/10 mb-2 inline-block">Post</span>
+                            <code class="block text-xs text-slate-300">/pdf/merge</code>
+                            <p class="text-[11px] text-slate-500 mt-1">Multi-document fusion</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="glass p-8 rounded-3xl bg-gradient-to-br from-cosmic-500/10 to-transparent border-cosmic-500/20">
+                    <h2 class="text-xl font-display font-bold text-white mb-4">Enterprise Node</h2>
+                    <p class="text-sm text-slate-400 font-light mb-6">
+                        Secure, distributed, and ready for inter-galactic deployment.
+                    </p>
+                    <div class="space-y-3">
+                        <div class="flex items-center text-xs text-slate-300">
+                            <svg class="w-4 h-4 text-cosmic-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            AES-256 Encryption
+                        </div>
+                        <div class="flex items-center text-xs text-slate-300">
+                            <svg class="w-4 h-4 text-cosmic-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Vectorized Rendering
+                        </div>
+                        <div class="flex items-center text-xs text-slate-300">
+                            <svg class="w-4 h-4 text-cosmic-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            99.99% Node Uptime
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check server status
+        async function checkStatus() {
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                
+                if (data.status === 'healthy') {
+                    document.getElementById('status-text').textContent = 'Node Active';
+                    document.getElementById('status-text').className = 'text-emerald-400 font-medium';
+                    document.getElementById('memory-text').textContent = `${data.memory_usage} KB Load`;
+                    document.getElementById('version-text').textContent = `v${data.version} Production`;
+                } else {
+                    document.getElementById('status-text').textContent = 'Node Offline';
+                    document.getElementById('status-text').className = 'text-red-400 font-medium';
+                }
+            } catch (error) {
+                document.getElementById('status-text').textContent = 'Connection Error';
+                document.getElementById('status-text').className = 'text-amber-400 font-medium';
+                document.getElementById('memory-text').textContent = 'N/A';
+            }
+        }
+
+        // Generate PDF
+        async function generatePDF() {
+            const template = document.getElementById('template').value;
+            const loading = document.getElementById('loading');
+            const resultPanel = document.getElementById('result-panel');
+            const resultContent = document.getElementById('result-content');
+            const downloadContainer = document.getElementById('download-container');
+            
+            loading.classList.remove('hidden');
+            resultPanel.classList.add('hidden');
+            
+            try {
+                let url, data;
+                
+                if (template === 'custom') {
+                    url = '/pdf/generate';
+                    data = {
+                        title: document.getElementById('title').value,
+                        content: document.getElementById('content').value
+                    };
+                } else {
+                    url = `/pdf/template/${template}`;
+                    data = {
+                        filename: `${template}_example.pdf`
+                    };
+                    
+                    // Add template-specific data
+                    if (template === 'invoice') {
+                        Object.assign(data, {
+                            company_name: 'DAPPS XETA Inc.',
+                            client_name: 'Client Company',
+                            items: [
+                                { description: 'PDF Generation Service', quantity: 1, price: 99.99 },
+                                { description: 'Template Design', quantity: 2, price: 49.99 }
+                            ],
+                            total: 199.97
+                        });
+                    }
+                }
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const responseData = await response.json();
+                
+                if (responseData.success) {
+                    const pdfBlob = base64ToBlob(responseData.pdf_base64, 'application/pdf');
+                    const pdfUrl = URL.createObjectURL(pdfBlob);
+                    
+                    resultPanel.className = 'mt-8 p-6 rounded-2xl glass border-emerald-500/30 bg-emerald-500/5 animate-in fade-in slide-in-from-bottom-4 duration-500';
+                    resultContent.innerHTML = `
+                        <h4 class="text-emerald-400 font-bold flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Synthesis Complete
+                        </h4>
+                        <p class="text-slate-400 text-xs font-light">Document Payload: ${responseData.size} bytes | Efficiency: 100%</p>
+                    `;
+                    downloadContainer.innerHTML = `
+                        <a href="${pdfUrl}" download="${responseData.filename}" class="px-6 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold rounded-lg transition-all shadow-lg shadow-emerald-500/20 flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            Download
+                        </a>
+                    `;
+                } else {
+                    resultPanel.className = 'mt-8 p-6 rounded-2xl glass border-red-500/30 bg-red-500/5 animate-in fade-in slide-in-from-bottom-4 duration-500';
+                    resultContent.innerHTML = `
+                        <h4 class="text-red-400 font-bold">Generation Failed</h4>
+                        <p class="text-slate-400 text-xs">${responseData.error}</p>
+                    `;
+                    downloadContainer.innerHTML = '';
+                }
+                
+                resultPanel.classList.remove('hidden');
+                
+            } catch (error) {
+                resultPanel.className = 'mt-8 p-6 rounded-2xl glass border-amber-500/30 bg-amber-500/5 animate-in fade-in slide-in-from-bottom-4 duration-500';
+                resultContent.innerHTML = `
+                    <h4 class="text-amber-400 font-bold">Network Exception</h4>
+                    <p class="text-slate-400 text-xs">${error.message}</p>
+                `;
+                downloadContainer.innerHTML = '';
+                resultPanel.classList.remove('hidden');
+            }
+            
+            loading.classList.add('hidden');
+        }
+
+        // Convert base64 to blob
+        function base64ToBlob(base64, mimeType) {
+            const byteCharacters = atob(base64);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            return new Blob([byteArray], { type: mimeType });
+        }
+
+        // Handle template change
+        document.getElementById('template').addEventListener('change', function() {
+            const titleGroup = document.getElementById('title-group');
+            const contentGroup = document.getElementById('content-group');
+            
+            if (this.value === 'custom') {
+                titleGroup.style.display = 'block';
+                contentGroup.style.display = 'block';
+            } else {
+                titleGroup.style.display = 'none';
+                contentGroup.style.display = 'none';
+            }
+        });
+
+        // Check status on load
+        checkStatus();
+        setInterval(checkStatus, 30000);
+    </script>
+</body>
+</html>
