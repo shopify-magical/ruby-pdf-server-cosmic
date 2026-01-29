@@ -89,7 +89,7 @@
         </header>
 
         <!-- Status Dashboard -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
             <div class="glass p-6 rounded-2xl flex items-center space-x-4">
                 <div class="p-3 rounded-xl bg-cosmic-500/10 text-cosmic-400">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -101,21 +101,56 @@
             </div>
             <div class="glass p-6 rounded-2xl flex items-center space-x-4">
                 <div class="p-3 rounded-xl bg-purple-500/10 text-purple-400">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                 </div>
                 <div>
-                    <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold">Memory Load</p>
-                    <p id="memory-text" class="text-white font-medium">Calculating...</p>
+                    <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold">CPU Usage</p>
+                    <p id="cpu-text" class="text-white font-medium">0.0%</p>
+                </div>
+            </div>
+            <div class="glass p-6 rounded-2xl flex items-center space-x-4">
+                <div class="p-3 rounded-xl bg-amber-500/10 text-amber-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold">Node Uptime</p>
+                    <p id="uptime-text" class="text-white font-medium">00:00</p>
                 </div>
             </div>
             <div class="glass p-6 rounded-2xl flex items-center space-x-4">
                 <div class="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                 </div>
                 <div>
-                    <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold">Service Version</p>
-                    <p id="version-text" class="text-white font-medium">v2.0.0 Cosmic</p>
+                    <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold">Memory Load</p>
+                    <p id="memory-text" class="text-white font-medium">0.0 MB</p>
                 </div>
+            </div>
+        </div>
+
+        <!-- System Logs & Cache Stats -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-12">
+            <div class="lg:col-span-3 glass p-6 rounded-2xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-bold text-white uppercase tracking-widest flex items-center">
+                        <span class="w-2 h-2 bg-cosmic-500 rounded-full mr-2 animate-pulse"></span>
+                        Telemetry Stream
+                    </h3>
+                    <div id="cache-stats" class="text-[10px] text-slate-500 uppercase font-bold tracking-tighter">
+                        Cache Hits: 0 | Size: 0
+                    </div>
+                </div>
+                <div id="log-container" class="font-mono text-[11px] h-32 overflow-y-auto space-y-1 text-slate-400 custom-scrollbar">
+                    <!-- Logs will appear here -->
+                </div>
+            </div>
+            <div class="glass p-6 rounded-2xl flex flex-col justify-center">
+                <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold mb-2">Processing Mode</p>
+                <div class="flex items-center space-x-2">
+                    <span class="w-3 h-3 bg-emerald-500 rounded-full"></span>
+                    <span class="text-white font-medium">Ultra-Latency</span>
+                </div>
+                <p class="text-[10px] text-slate-600 mt-2 font-mono">Zero-copy enabled</p>
             </div>
         </div>
 
@@ -139,19 +174,54 @@
                                 <option value="custom">Custom Engine</option>
                                 <option value="invoice">Invoice Protocol</option>
                                 <option value="report">Analytic Report</option>
-                                <option value="certificate">Merit Certificate</option>
+                                    <option value="orbital_manifest">Orbital Manifest</option>
+                                    <option value="certificate">Recognition Certificate</option>
                                 <option value="resume">Professional CV</option>
+                                <option value="badge">Digital Badge Protocol</option>
                             </select>
                         </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Visual Theme</label>
+                            <select id="theme" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cosmic-500/50 focus:border-cosmic-500 transition-all">
+                                <option value="classic">Classic Light</option>
+                                <option value="dark_matter">Dark Matter</option>
+                                <option value="nebula">Deep Nebula</option>
+                                <option value="blueprint">Structural Blueprint</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                         <div class="space-y-2" id="title-group">
                             <label class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Document Title</label>
                             <input type="text" id="title" placeholder="Protocol Identification" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cosmic-500/50 focus:border-cosmic-500 transition-all">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Operation Mode</label>
+                            <div class="flex items-center space-x-4 h-full pt-1">
+                                <button onclick="toggleBatchMode()" id="batch-toggle" class="px-4 py-2 rounded-lg border border-slate-700 text-slate-400 text-xs font-bold uppercase tracking-widest hover:border-cosmic-500 transition-all">
+                                    Single Synthesis
+                                </button>
+                                <span id="batch-indicator" class="text-[10px] text-slate-600 font-mono uppercase">Single sequence active</span>
+                            </div>
                         </div>
                     </div>
 
                     <div class="space-y-2 mb-8" id="content-group">
                         <label class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Core Content Data</label>
                         <textarea id="content" rows="6" placeholder="Enter structured data or raw text..." class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cosmic-500/50 focus:border-cosmic-500 transition-all"></textarea>
+                    </div>
+
+                    <!-- Advanced Options -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-400 uppercase tracking-wider">QR Code Payload</label>
+                            <input type="text" id="qrcode" placeholder="https://..." class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Access Password</label>
+                            <input type="password" id="password" placeholder="AES-256 Protocol" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all">
+                        </div>
                     </div>
 
                     <div class="flex items-center justify-between">
@@ -161,6 +231,9 @@
                                     <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                                     <span>Initiate Generation</span>
                                 </span>
+                            </button>
+                            <button onclick="runCosmicDemo()" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl border border-slate-700 transition-all hover:border-cosmic-500/50">
+                                <span>Cosmic Demo</span>
                             </button>
                         </div>
                         <div id="loading" class="hidden">
@@ -176,10 +249,37 @@
 
                     <!-- Result Panel -->
                     <div id="result-panel" class="hidden mt-8 p-6 rounded-2xl border transition-all animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        <div class="flex items-start justify-between">
+                        <div class="flex items-start justify-between mb-6">
                             <div id="result-content" class="space-y-2"></div>
                             <div id="download-container"></div>
                         </div>
+                        <div id="preview-container" class="w-full aspect-[1/1.4] bg-slate-900/80 rounded-xl overflow-hidden border border-slate-800">
+                            <iframe id="pdf-preview" class="w-full h-full" frameborder="0"></iframe>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="batch-section" class="hidden glass p-8 rounded-3xl relative overflow-hidden border-purple-500/20">
+                    <div class="absolute top-0 right-0 p-4 opacity-10">
+                        <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M4 6h16V4H4c-1.1 0-2 .9-2 2v11H0v3h24v-3h-2V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v11h2V6z"/></svg>
+                    </div>
+                    
+                    <h2 class="text-2xl font-display font-bold text-white mb-6 flex items-center space-x-3">
+                        <span class="w-8 h-8 rounded-lg bg-purple-500 flex items-center justify-center text-sm">B1</span>
+                        <span>Batch Synthesis Protocol</span>
+                    </h2>
+
+                    <p class="text-sm text-slate-400 mb-6">Enter a JSON array of document requests to execute parallel synthesis across the node.</p>
+                    
+                    <textarea id="batch-data" rows="8" placeholder='[{"title": "Doc 1", "content": "..."}, {"title": "Doc 2", "content": "..."}]' class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white font-mono text-xs mb-6 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"></textarea>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button onclick="processBatch()" class="w-full bg-cosmic-600 hover:bg-cosmic-500 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]">
+                            Execute Parallel Synthesis
+                        </button>
+                        <button onclick="processBatchZip()" class="w-full bg-purple-600/20 hover:bg-purple-600/30 text-purple-400 border border-purple-500/30 font-semibold py-3 px-6 rounded-xl transition-all duration-200">
+                            ZIP Archive Protocol
+                        </button>
                     </div>
                 </section>
 
@@ -246,64 +346,317 @@
     </div>
 
     <script>
-        // Check server status
-        async function checkStatus() {
+        // Check server status and metrics
+        async function updateMetrics() {
             try {
-                const response = await fetch('/health');
+                const response = await fetch('/metrics');
                 const data = await response.json();
                 
-                if (data.status === 'healthy') {
-                    document.getElementById('status-text').textContent = 'Node Active';
-                    document.getElementById('status-text').className = 'text-emerald-400 font-medium';
-                    document.getElementById('memory-text').textContent = `${data.memory_usage} KB Load`;
-                    document.getElementById('version-text').textContent = `v${data.version} Production`;
-                } else {
-                    document.getElementById('status-text').textContent = 'Node Offline';
-                    document.getElementById('status-text').className = 'text-red-400 font-medium';
-                }
+                document.getElementById('status-text').textContent = 'Node Active';
+                document.getElementById('status-text').className = 'text-emerald-400 font-medium';
+                document.getElementById('cpu-text').textContent = data.cpu_usage;
+                document.getElementById('uptime-text').textContent = data.uptime;
+                document.getElementById('memory-text').textContent = data.memory_usage;
+                
+                // Update cache stats
+                document.getElementById('cache-stats').textContent = `Cache Hits: ${data.cache_hits} | Size: ${data.cache_size}`;
             } catch (error) {
                 document.getElementById('status-text').textContent = 'Connection Error';
                 document.getElementById('status-text').className = 'text-amber-400 font-medium';
-                document.getElementById('memory-text').textContent = 'N/A';
             }
         }
 
+        // Fetch logs
+        async function updateLogs() {
+            try {
+                const response = await fetch('/logs');
+                const data = await response.json();
+                const container = document.getElementById('log-container');
+                
+                container.innerHTML = data.logs.map(log => 
+                    `<div class="flex items-start space-x-2">
+                        <span class="text-cosmic-500 shrink-0">›</span>
+                        <span>${log}</span>
+                    </div>`
+                ).join('');
+                container.scrollTop = container.scrollHeight;
+            } catch (e) {}
+        }
+
+        // Run updates
+        setInterval(updateMetrics, 5000);
+        setInterval(updateLogs, 3000);
+        updateMetrics();
+        updateLogs();
+
+        // Helper to convert base64 to Blob
+        function base64ToBlob(base64, type) {
+            const byteCharacters = atob(base64.replace(/\s/g, ''));
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            return new Blob([byteArray], { type: type });
+        }
+
         // Generate PDF
-        async function generatePDF() {
-            const template = document.getElementById('template').value;
-            const loading = document.getElementById('loading');
+        let isBatchMode = false;
+
+        function toggleBatchMode() {
+            isBatchMode = !isBatchMode;
+            const toggle = document.getElementById('batch-toggle');
+            const indicator = document.getElementById('batch-indicator');
+            const contentLabel = document.querySelector('#content-group label');
+            const contentArea = document.getElementById('content');
+            
+            if (isBatchMode) {
+                toggle.innerText = 'Batch Synthesis';
+                toggle.classList.add('bg-cosmic-500/10', 'border-cosmic-500', 'text-cosmic-400');
+                indicator.innerText = 'Multiple array protocol active';
+                contentLabel.innerText = 'Core Content Array (JSON Array)';
+                contentArea.placeholder = '[{"title": "Doc 1", "content": "..."}, {"title": "Doc 2", "content": "..."}]';
+            } else {
+                toggle.innerText = 'Single Synthesis';
+                toggle.classList.remove('bg-cosmic-500/10', 'border-cosmic-500', 'text-cosmic-400');
+                indicator.innerText = 'Single sequence active';
+                contentLabel.innerText = 'Core Content Data';
+                contentArea.placeholder = 'Enter structured data or raw text...';
+            }
+        }
+
+        function base64ToBlob(base64, type = 'application/pdf') {
+            const byteCharacters = atob(base64.replace(/\s/g, ''));
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            return new Blob([byteArray], { type: type });
+        }
+
+        function runCosmicDemo() {
+            // Set up a cool demo: Digital Badge in Deep Nebula theme
+            document.getElementById('template').value = 'badge';
+            document.getElementById('theme').value = 'nebula';
+            document.getElementById('title').value = 'COSMIC ARCHITECT ACCESS';
+            document.getElementById('content').value = 'SECURE SECTOR ACCESS GRANTED';
+            
+            // Trigger change event to hide/show groups
+            document.getElementById('template').dispatchEvent(new Event('change'));
+            
+            // Add some flavor to the logs
+            const logContainer = document.getElementById('log-container');
+            const demoLog = document.createElement('div');
+            demoLog.className = 'text-cosmic-400 font-bold';
+            demoLog.innerText = `[DEMO] Initializing Cosmic Architecture Demo Sequence...`;
+            logContainer.prepend(demoLog);
+            
+            setTimeout(generatePDF, 500);
+        }
+
+        function toggleBatchMode() {
+            const batchSection = document.getElementById('batch-section');
+            const titleGroup = document.getElementById('title-group');
+            const contentGroup = document.getElementById('content-group');
+            const indicator = document.getElementById('batch-indicator');
+            const toggleBtn = document.getElementById('batch-toggle');
+            
+            if (batchSection.classList.contains('hidden')) {
+                batchSection.classList.remove('hidden');
+                titleGroup.classList.add('hidden');
+                contentGroup.classList.add('hidden');
+                indicator.textContent = 'Batch sequence active';
+                toggleBtn.textContent = 'Single Mode';
+                toggleBtn.classList.add('border-purple-500', 'text-purple-400');
+            } else {
+                batchSection.classList.add('hidden');
+                titleGroup.classList.remove('hidden');
+                contentGroup.classList.remove('hidden');
+                indicator.textContent = 'Single sequence active';
+                toggleBtn.textContent = 'Batch Mode';
+                toggleBtn.classList.remove('border-purple-500', 'text-purple-400');
+            }
+        }
+
+        async function processBatch() {
+            const batchData = document.getElementById('batch-data').value;
+            try {
+                const requests = JSON.parse(batchData);
+                const loading = document.getElementById('loading');
+                loading.classList.remove('hidden');
+                
+                const response = await fetch('/pdf/batch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ requests })
+                });
+                
+                const result = await response.json();
+                loading.classList.add('hidden');
+                
+                if (result.success) {
+                    showBatchResult(result);
+                } else {
+                    alert('Synthesis error: ' + result.error);
+                }
+            } catch (e) {
+                alert('Invalid JSON array protocol');
+            }
+        }
+
+        async function processBatchZip() {
+            const batchData = document.getElementById('batch-data').value;
+            try {
+                const requests = JSON.parse(batchData);
+                const loading = document.getElementById('loading');
+                loading.classList.remove('hidden');
+                
+                const response = await fetch('/pdf/batch-zip', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ requests })
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `batch_${Date.now()}.zip`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                } else {
+                    const result = await response.json();
+                    alert('ZIP synthesis error: ' + result.error);
+                }
+                loading.classList.add('hidden');
+            } catch (e) {
+                alert('Invalid JSON array protocol');
+            }
+        }
+
+        function showBatchResult(result) {
             const resultPanel = document.getElementById('result-panel');
             const resultContent = document.getElementById('result-content');
             const downloadContainer = document.getElementById('download-container');
             
+            resultPanel.classList.remove('hidden');
+            resultPanel.className = 'mt-8 p-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 transition-all';
+            
+            resultContent.innerHTML = `
+                <p class="text-emerald-400 font-bold uppercase tracking-widest text-xs">Synthesis Complete</p>
+                <h4 class="text-white text-lg font-display font-bold">${result.count} Documents Materialized</h4>
+                <p class="text-slate-400 text-xs font-mono">Batch ID: ${result.batch_id}</p>
+            `;
+            
+            downloadContainer.innerHTML = '';
+            result.documents.forEach(doc => {
+                const btn = document.createElement('button');
+                btn.className = 'text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded-md border border-slate-700 mr-2 mb-2';
+                btn.textContent = doc.filename;
+                btn.onclick = () => downloadBase64PDF(doc.pdf_base64, doc.filename);
+                downloadContainer.appendChild(btn);
+            });
+        }
+
+        function downloadBase64PDF(base64, filename) {
+            const linkSource = `data:application/pdf;base64,${base64}`;
+            const downloadLink = document.createElement("a");
+            downloadLink.href = linkSource;
+            downloadLink.download = filename;
+            downloadLink.click();
+        }
+
+        async function generatePDF() {
+            const template = document.getElementById('template').value;
+            const theme = document.getElementById('theme').value;
+            const loading = document.getElementById('loading');
+            const resultPanel = document.getElementById('result-panel');
+            const resultContent = document.getElementById('result-content');
+            const downloadContainer = document.getElementById('download-container');
+            const pdfPreview = document.getElementById('pdf-preview');
+            const startTime = performance.now();
+
             loading.classList.remove('hidden');
             resultPanel.classList.add('hidden');
-            
+
             try {
                 let url, data;
                 
-                if (template === 'custom') {
+                if (isBatchMode) {
+                    url = '/pdf/batch';
+                    try {
+                        const batchData = JSON.parse(document.getElementById('content').value);
+                        data = { 
+                            requests: batchData.map(req => ({
+                                ...req,
+                                theme: theme
+                            }))
+                        };
+                    } catch (e) {
+                        throw new Error("Invalid JSON array for Batch Synthesis");
+                    }
+                } else if (template === 'custom') {
                     url = '/pdf/generate';
                     data = {
                         title: document.getElementById('title').value,
-                        content: document.getElementById('content').value
+                        content: document.getElementById('content').value,
+                        qrcode: document.getElementById('qrcode').value,
+                        password: document.getElementById('password').value,
+                        theme: theme
                     };
                 } else {
                     url = `/pdf/template/${template}`;
                     data = {
-                        filename: `${template}_example.pdf`
+                        title: document.getElementById('title').value,
+                        theme: theme
                     };
                     
-                    // Add template-specific data
+                    // Add template-specific mock data
                     if (template === 'invoice') {
                         Object.assign(data, {
-                            company_name: 'DAPPS XETA Inc.',
-                            client_name: 'Client Company',
+                            invoice_number: 'INV-7788', 
+                            date: new Date().toLocaleDateString(),
+                            customer_name: 'NEBULA CORP',
                             items: [
-                                { description: 'PDF Generation Service', quantity: 1, price: 99.99 },
-                                { description: 'Template Design', quantity: 2, price: 49.99 }
+                                { name: 'Quantum CPU', quantity: 1, price: 1500.00 },
+                                { name: 'Supercooled RAM', quantity: 4, price: 200.00 }
                             ],
-                            total: 199.97
+                            total: 2300.00
+                        });
+                    } else if (template === 'report') {
+                        Object.assign(data, {
+                            author: 'STEVE JOHN',
+                            date: new Date().toLocaleDateString(),
+                            sections: [
+                                { title: 'Executive Summary', content: 'Performance metrics exceeding projections by 400%.' },
+                                { title: 'Analysis', content: 'Neural engines are stable under cosmic-scale loads.' }
+                            ]
+                        });
+                    } else if (template === 'certificate') {
+                        Object.assign(data, {
+                            recipient: 'ELITE ARCHITECT',
+                            course: 'COSMIC SYSTEM DESIGN',
+                            date: new Date().toLocaleDateString(),
+                            issuer: 'RUBY++ ACADEMY'
+                        });
+                    } else if (template === 'resume') {
+                        Object.assign(data, {
+                            name: 'STEVE JOHN',
+                            contact_info: 'steve@node.cosmic.io',
+                            summary: 'Elite system architect with 10+ years of cosmic experience.',
+                            experience: 'Architected multiple galactic-scale clusters.',
+                            education: 'PhD in Quantum Computing.',
+                            skills: 'Ruby, Rust, Go, Cosmic-Scale Engineering'
+                        });
+                    } else if (template === 'badge') {
+                        Object.assign(data, {
+                            organization: 'COSMIC ARCHITECTS',
+                            name: 'STEVE JOHN',
+                            role: 'ELITE ENGINEER',
+                            id_number: 'CX-9900'
                         });
                     }
                 }
@@ -317,58 +670,69 @@
                 });
                 
                 const responseData = await response.json();
+                const endTime = performance.now();
+                const duration = (endTime - startTime).toFixed(2);
                 
                 if (responseData.success) {
-                    const pdfBlob = base64ToBlob(responseData.pdf_base64, 'application/pdf');
-                    const pdfUrl = URL.createObjectURL(pdfBlob);
-                    
-                    resultPanel.className = 'mt-8 p-6 rounded-2xl glass border-emerald-500/30 bg-emerald-500/5 animate-in fade-in slide-in-from-bottom-4 duration-500';
-                    resultContent.innerHTML = `
-                        <h4 class="text-emerald-400 font-bold flex items-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            Synthesis Complete
-                        </h4>
-                        <p class="text-slate-400 text-xs font-light">Document Payload: ${responseData.size} bytes | Efficiency: 100%</p>
-                    `;
-                    downloadContainer.innerHTML = `
-                        <a href="${pdfUrl}" download="${responseData.filename}" class="px-6 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold rounded-lg transition-all shadow-lg shadow-emerald-500/20 flex items-center">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                            Download
-                        </a>
-                    `;
-                } else {
-                    resultPanel.className = 'mt-8 p-6 rounded-2xl glass border-red-500/30 bg-red-500/5 animate-in fade-in slide-in-from-bottom-4 duration-500';
-                    resultContent.innerHTML = `
-                        <h4 class="text-red-400 font-bold">Generation Failed</h4>
-                        <p class="text-slate-400 text-xs">${responseData.error}</p>
-                    `;
-                    downloadContainer.innerHTML = '';
-                }
-                
-                resultPanel.classList.remove('hidden');
-                
-            } catch (error) {
-                resultPanel.className = 'mt-8 p-6 rounded-2xl glass border-amber-500/30 bg-amber-500/5 animate-in fade-in slide-in-from-bottom-4 duration-500';
-                resultContent.innerHTML = `
-                    <h4 class="text-amber-400 font-bold">Network Exception</h4>
-                    <p class="text-slate-400 text-xs">${error.message}</p>
-                `;
-                downloadContainer.innerHTML = '';
-                resultPanel.classList.remove('hidden');
-            }
-            
-            loading.classList.add('hidden');
-        }
+                    if (isBatchMode) {
+                        resultContent.innerHTML = `
+                            <div class="flex items-center space-x-2 text-emerald-400 font-bold">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <span>Batch Synthesis Complete</span>
+                            </div>
+                            <p class="text-xs text-slate-400 font-mono">Generated ${responseData.documents.length} documents | Latency: ${duration}ms</p>
+                        `;
+                        
+                        downloadContainer.innerHTML = responseData.documents.map((doc, i) => {
+                            const blob = base64ToBlob(doc.pdf_base64, 'application/pdf');
+                            const url = URL.createObjectURL(blob);
+                            if (i === 0) pdfPreview.src = url;
+                            return `
+                                <a href="${url}" download="${doc.filename}" class="inline-flex items-center space-x-2 px-3 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-[10px] rounded-lg border border-emerald-500/10 transition-all mr-2 mb-2">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                    <span>${doc.filename}</span>
+                                </a>
+                            `;
+                        }).join('');
+                    } else {
+                        const pdfBlob = base64ToBlob(responseData.pdf_base64, 'application/pdf');
+                        const pdfUrl = URL.createObjectURL(pdfBlob);
+                        
+                        pdfPreview.src = pdfUrl;
+                        
+                        resultContent.innerHTML = `
+                            <div class="flex items-center space-x-2 text-emerald-400 font-bold">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <span>Synthesis Successful ${responseData.cached ? '(Cached)' : ''}</span>
+                            </div>
+                            <p class="text-xs text-slate-400 font-mono">ID: ${Math.random().toString(36).substr(2, 9).toUpperCase()} | Latency: ${duration}ms</p>
+                        `;
+                        
+                        downloadContainer.innerHTML = `
+                            <a href="${pdfUrl}" download="${responseData.filename}" class="flex items-center space-x-2 px-4 py-2 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 rounded-lg border border-emerald-500/20 transition-all">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                <span class="text-xs font-bold uppercase tracking-wider">Download</span>
+                            </a>
+                        `;
+                    }
 
-        // Convert base64 to blob
-        function base64ToBlob(base64, mimeType) {
-            const byteCharacters = atob(base64);
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let i = 0; i < byteCharacters.length; i++) {
-                byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    resultPanel.className = 'mt-8 p-6 rounded-2xl glass border-emerald-500/30 bg-emerald-500/5 animate-in fade-in slide-in-from-bottom-4 duration-500';
+                    resultPanel.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error(error);
+                resultPanel.className = 'mt-8 p-6 rounded-2xl glass border-amber-500/30 bg-amber-500/5 animate-in fade-in slide-in-from-bottom-4 duration-500';
+                resultPanel.classList.remove('hidden');
+                resultContent.innerHTML = `
+                    <div class="flex items-center space-x-2 text-amber-400 font-bold">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        <span>Synthesis Failed</span>
+                    </div>
+                    <p class="text-xs text-slate-400">Protocol interrupt detected.</p>
+                `;
+            } finally {
+                loading.classList.add('hidden');
             }
-            const byteArray = new Uint8Array(byteNumbers);
-            return new Blob([byteArray], { type: mimeType });
         }
 
         // Handle template change

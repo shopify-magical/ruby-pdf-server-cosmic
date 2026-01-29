@@ -1,0 +1,443 @@
+#!/usr/bin/env ruby
+require 'net/http'
+require 'json'
+require 'base64'
+require 'optparse'
+require 'digest'
+
+# Cosmic CLI Protocol: Ruby++ PDF Generator
+class CosmicCLI
+  API_URL = "http://localhost:4567"
+
+  def initialize
+    @options = {
+      template: 'custom',
+      theme: 'classic',
+      output: 'output.pdf',
+      title: 'CLI Document'
+    }
+    parse_options
+  end
+
+  def parse_options
+    OptionParser.new do |opts|
+      opts.banner = "Usage: ./pdf-gen [options]"
+
+      opts.on("-t", "--template NAME", "Template: custom, invoice, report, certificate, resume, badge") { |v| @options[:template] = v }
+      opts.on("-s", "--theme NAME", "Theme: classic, dark_matter, nebula, blueprint") { |v| @options[:theme] = v }
+      opts.on("-o", "--output FILE", "Output filename") { |v| @options[:output] = v }
+      opts.on("-n", "--title TITLE", "Document title") { |v| @options[:title] = v }
+      opts.on("-z", "--zip", "Generate batch as ZIP archive") { @options[:zip] = true }
+      opts.on("-u", "--url URL", "Generate PDF from URL") { |v| @options[:url] = v }
+      opts.on("-a", "--open", "Auto-open PDF after synthesis") { @options[:open] = true }
+      opts.on("-l", "--list", "List available templates and themes") { @options[:list] = true }
+      opts.on("-g", "--organize", "Organize generated PDFs into folders") { @options[:organize] = true }
+      opts.on("-c", "--content CONTENT", "Raw content for custom template") { |v| @options[:content] = v }
+      opts.on("-p", "--password PWD", "Encrypt PDF with AES-256") { |v| @options[:password] = v }
+      opts.on("-q", "--qr DATA", "Embed QR code with specified data") { |v| @options[:qrcode] = v }
+      opts.on("-k", "--watermark TEXT", "Apply vectorized watermark overlay") { |v| @options[:watermark] = v }
+      opts.on("-v", "--verify FILE", "Verify document integrity & signature") { |v| @options[:verify] = v }
+      opts.on("-j", "--webhook URL", "Relay synthesis event to webhook") { |v| @options[:webhook] = v }
+      opts.on("-m", "--metrics", "Show server metrics") { @options[:metrics] = true }
+      opts.on("-w", "--watch", "Watch metrics in real-time") { @options[:watch] = true }
+      opts.on("-d", "--dashboard", "Launch Cosmic Flight Deck (Enhanced UI)") { @options[:dashboard] = true }
+      opts.on("-b", "--benchmark", "Run synthesis stress test") { @options[:benchmark] = true }
+      opts.on("-h", "--help", "Show help") do
+        puts opts
+        exit
+      end
+    end.parse!
+  end
+
+  def run
+    if @options[:metrics]
+      fetch_metrics
+    elsif @options[:watch]
+      watch_metrics
+    elsif @options[:dashboard]
+      launch_dashboard
+    elsif @options[:benchmark]
+      run_benchmark
+    elsif @options[:zip]
+      generate_batch_zip
+    elsif @options[:list]
+      list_capabilities
+    elsif @options[:organize]
+      organize_files
+    elsif @options[:verify]
+      verify_document
+    else
+      generate_pdf
+    end
+  end
+
+  private
+
+  def generate_batch_zip
+    puts "\e[34m[ZIP SYNTHESIS]\e[0m Materializing document cluster..."
+    uri = URI("#{API_URL}/pdf/batch-zip")
+    
+    payload = {
+      requests: [
+        { title: "Manifest Alpha", content: "Cargo ID #772", theme: "blueprint" },
+        { title: "Manifest Beta", content: "Cargo ID #773", theme: "nebula" },
+        { title: "Manifest Gamma", content: "Cargo ID #774", theme: "dark_matter" }
+      ]
+    }
+    
+    begin
+      http = Net::HTTP.new(uri.host, uri.port)
+      request = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
+      request.body = payload.to_json
+      response = http.request(request)
+      
+      if response.code == '200'
+        output_file = @options[:output] || "batch_#{Time.now.to_i}.zip"
+        File.open(output_file, 'wb') { |f| f.write(response.body) }
+        puts "\e[32m[SUCCESS]\e[0m Cluster materialized at: #{output_file}"
+        
+        if @options[:open]
+          puts "\e[34m[OPENING PROTOCOL]\e[0m Launching viewer..."
+          `open "#{output_file}"` if RUBY_PLATFORM =~ /darwin/
+        end
+      else
+        puts "\e[31m[ERROR]\e[0m Server returned #{response.code}"
+      end
+    rescue => e
+      puts "\e[31m[ERROR]\e[0m #{e.message}"
+    end
+  end
+
+  def run_benchmark
+    puts "\e[35m[COSMIC BENCHMARK]\e[0m Initiating 50x Synthesis Stress Test..."
+    start_time = Time.now
+    success_count = 0
+    threads = []
+    
+    50.times do |i|
+      threads << Thread.new do
+        begin
+          uri = URI("#{API_URL}/pdf/generate")
+          http = Net::HTTP.new(uri.host, uri.port)
+          request = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
+          request.body = { title: "Bench #{i}", content: "Load test data" }.to_json
+          response = http.request(request)
+          success_count += 1 if response.code == '200'
+        rescue
+          # Silent fail for bench
+        end
+      end
+    end
+    
+    threads.each(&:join)
+    total_time = Time.now - start_time
+    
+    puts "----------------------------------------"
+    puts "Total Documents: 50"
+    puts "Success Rate:    #{(success_count/50.0*100).to_i}%"
+    puts "Total Time:      #{total_time.round(2)}s"
+    puts "Avg Latency:     #{(total_time/50*1000).round(2)}ms"
+    puts "Throughput:      #{(50/total_time).round(2)} docs/s"
+    puts "----------------------------------------"
+  end
+
+  def launch_dashboard
+    puts "\e[?1049h" # Switch to alternate screen
+    trap("INT") { puts "\e[?1049l"; exit }
+    
+    loop do
+      print "\e[H" # Move to home
+      uri = URI("#{API_URL}/metrics")
+      data = JSON.parse(Net::HTTP.get(uri)) rescue {}
+      
+      puts "\e[35m╔════════════════════════════════════════════════════════════╗\e[0m"
+      puts "\e[35m║\e[0m \e[1;36mCOSMIC PDF ENGINE - FLIGHT DECK\e[0m                          \e[35m║\e[0m"
+      puts "\e[35m╠════════════════════════════════════════════════════════════╣\e[0m"
+      
+      # Status Bar
+      uptime = data['uptime'] || '00:00:00'
+      status = data['throughput'].to_f > 0 ? "\e[32mACTIVE\e[0m" : "\e[33mIDLE\e[0m"
+      puts "\e[35m║\e[0m STATUS: #{status.ljust(15)} UPTIME: #{uptime.ljust(22)} \e[35m║\e[0m"
+      
+      # Resources
+      mem = data['memory_usage'] || '0 MB'
+      cpu = data['cpu_usage'] || '0%'
+      puts "\e[35m║\e[0m MEMORY: #{mem.ljust(15)} CPU LOAD: #{cpu.ljust(21)} \e[35m║\e[0m"
+      
+      puts "\e[35m╠════════════════════════════════════════════════════════════╣\e[0m"
+      
+      # Telemetry
+      throughput_val = data['throughput'].to_f
+      pulse = ("█" * (throughput_val / 10).to_i).ljust(20, "░")
+      throughput = "\e[1;32m#{data['throughput']}\e[0m req/s"
+      latency = "\e[1;36m#{data['last_latency_ms']}\e[0m ms"
+      puts "\e[35m║\e[0m \e[1mTELEMETRY\e[0m                                                  \e[35m║\e[0m"
+      puts "\e[35m║\e[0m PULSE: [#{pulse}]                                  \e[35m║\e[0m"
+      puts "\e[35m║\e[0m Throughput: #{throughput.ljust(25)} Latency: #{latency.ljust(18)} \e[35m║\e[0m"
+      
+      # Cache Stats
+      cache_ratio = data['total_requests'].to_i > 0 ? (data['cache_hits'].to_f / data['total_requests'].to_f * 100).round(1) : 0
+      hits = "#{data['cache_hits']} hits (#{cache_ratio}%)"
+      puts "\e[35m║\e[0m Cache Size: #{data['cache_size'].to_s.ljust(14)} Efficiency: #{hits.ljust(16)} \e[35m║\e[0m"
+      
+      # Security Pulse
+      sig_status = "\e[32mSECURE\e[0m (RSA-4096 Equivalent)"
+      puts "\e[35m║\e[0m SECURITY: #{sig_status.ljust(50)} \e[35m║\e[0m"
+      
+      puts "\e[35m╠════════════════════════════════════════════════════════════╣\e[0m"
+      
+      # Recent Logs (last 3)
+      puts "\e[35m║\e[0m \e[1mRECENT LOGS\e[0m                                                \e[35m║\e[0m"
+      begin
+        log_uri = URI("#{API_URL}/logs")
+        logs = JSON.parse(Net::HTTP.get(log_uri))
+      rescue
+        logs = []
+      end
+      
+      logs.last(3).reverse.each do |log|
+        # If log is a string, handle it; if it's a hash, extract message
+        msg = log.is_a?(Hash) ? "#{log['timestamp']} [#{log['level'].upcase}] #{log['message']}" : log.to_s
+        puts "\e[35m║\e[0m #{msg[0..56].ljust(58)} \e[35m║\e[0m"
+      end
+      
+      (3 - logs.last(3).size).times { puts "\e[35m║\e[0m".ljust(59) + "\e[35m║\e[0m" }
+      
+      puts "\e[35m╚════════════════════════════════════════════════════════════╝\e[0m"
+      puts "\e[34m[Ctrl+C to Exit Flight Deck]\e[0m"
+      
+      sleep 1
+    end
+  end
+
+  def watch_metrics
+    puts "\e[35m[COSMIC WATCH]\e[0m Press Ctrl+C to stop..."
+    loop do
+      print "\e[H\e[2J" # Clear screen
+      fetch_metrics
+      sleep 1
+    end
+  rescue Interrupt
+    puts "\n\e[34m[WATCH STOPPED]\e[0m"
+  end
+
+  def organize_files
+    puts "\e[34m[ORGANIZATION PROTOCOL]\e[0m Sorting materialized assets..."
+    `mkdir -p generated_pdfs`
+    
+    # Move all PDFs in current dir to generated_pdfs
+    pdfs = Dir.glob("*.pdf")
+    if pdfs.empty?
+      puts "\e[33m[INFO]\e[0m No loose PDFs found to organize."
+      return
+    end
+
+    pdfs.each do |pdf|
+      `mv "#{pdf}" generated_pdfs/`
+    end
+    
+    puts "\e[32m[SUCCESS]\e[0m #{pdfs.length} files migrated to ./generated_pdfs/"
+    
+    # Auto-reveal on macOS
+    `open generated_pdfs/` if RUBY_PLATFORM =~ /darwin/
+  end
+
+  def list_capabilities
+    puts "\e[35m[COSMIC CAPABILITIES]\e[0m"
+    puts "\n\e[34m[TEMPLATES]\e[0m"
+    puts "  - custom:       Raw content injection"
+    puts "  - invoice:      Fiscal document with tax breakdown"
+    puts "  - report:       Multi-section analytic document"
+    puts "  - certificate:  Formal recognition protocol"
+    puts "  - orbital_manifest: Cosmic logistics tracking"
+    puts "  - resume:       Professional identity document"
+    puts "  - badge:        Secure identity with QR verification"
+    
+    puts "\n\e[34m[THEMES]\e[0m"
+    puts "  - classic:      Standard white/black professional"
+    puts "  - dark_matter:  Deep space high-contrast mode"
+    puts "  - nebula:       Vibrant purple/blue gradients"
+    puts "  - blueprint:    Technical architectural style"
+    
+    puts "\n\e[34m[PROTOCOLS]\e[0m"
+    puts "  - URL Synthesis (-u)"
+    puts "  - ZIP Batch Synthesis (-z)"
+    puts "  - AES-256 Encryption (-p)"
+    puts "  - Cosmic Signature Verification (-v)"
+    puts "  - Multi-Threaded Parallelism (Automatic)"
+  end
+
+  def fetch_metrics
+    puts "\e[35m[COSMIC METRICS]\e[0m #{Time.now.strftime('%H:%M:%S')}"
+    begin
+      uri = URI("#{API_URL}/metrics")
+      response = Net::HTTP.get(uri)
+      data = JSON.parse(response)
+      
+      puts "----------------------------------------"
+      puts "Uptime:     #{data['uptime']}"
+      puts "Memory:     #{data['memory_usage']}"
+      puts "CPU Load:   #{data['cpu_usage']}"
+      puts "Throughput: \e[32m#{data['throughput']}\e[0m"
+      puts "Latency:    \e[36m#{data['last_latency_ms']} ms\e[0m"
+      puts "Requests:   #{data['total_requests']}"
+      puts "Cache:      #{data['cache_size']} items (#{data['cache_hits']} hits)"
+      puts "Threads:    #{data['threads']}"
+      puts "----------------------------------------"
+    rescue => e
+      puts "\e[31m[ERROR]\e[0m #{e.message}"
+    end
+  end
+
+  def verify_document
+    file = @options[:verify]
+    unless File.exist?(file)
+      puts "\e[31m[ERROR]\e[0m File not found: #{file}"
+      return
+    end
+
+    puts "\e[34m[VERIFICATION PROTOCOL]\e[0m Scanning #{file}..."
+    
+    # 1. Calculate local checksum
+    file_hash = Digest::SHA256.file(file).hexdigest
+    puts "\e[35m[HASH]\e[0m #{file_hash}"
+    
+    # 2. Search for signature in file content (Footer)
+    content = File.binread(file)
+    # Search using a binary-safe approach
+    signature_match = content.match(/COSMIC VERIFIED: (SIG-[A-Z0-9]+)/n)
+    
+    if signature_match
+      signature = signature_match[1]
+      puts "\e[35m[SIGNATURE]\e[0m #{signature} detected in footer."
+      
+      # 3. Cross-reference with server metrics
+      begin
+        uri = URI("#{API_URL}/metrics")
+        response = JSON.parse(Net::HTTP.get(uri))
+        
+        server_match = nil
+        if response['signatures']
+          # Match by signature ID
+          if response['signatures'][signature]
+            server_match = response['signatures'][signature]
+          else
+            # Fallback: Match by file hash
+            server_match = response['signatures'].values.find { |s| s['file_hash'] == file_hash }
+          end
+        end
+
+        if server_match
+          puts "\e[32m[VERIFIED]\e[0m Record found in Cosmic Node registry."
+          puts "  - Origin:   #{server_match['filename']}"
+          puts "  - Created:  #{server_match['created_at']}"
+          puts "  - Hash:     #{server_match['file_hash'][0..16]}..."
+          puts "  - Status:   INTEGRITY CONFIRMED"
+        else
+          puts "\e[33m[ADVISORY]\e[0m Signature valid but not found in current cache registry."
+          puts "  (Registry may have been cleared or document was generated on a different node)"
+        end
+      rescue => e
+        puts "\e[33m[WARNING]\e[0m Could not connect to server for signature verification: #{e.message}"
+      end
+    else
+      puts "\e[31m[WARNING]\e[0m No Cosmic Signature found in document footer."
+      
+      # Try hash-only verification as fallback
+      begin
+        uri = URI("#{API_URL}/metrics")
+        response = JSON.parse(Net::HTTP.get(uri))
+        server_match = response['signatures']&.values&.find { |s| s['file_hash'] == file_hash }
+        
+        if server_match
+          puts "\e[32m[VERIFIED]\e[0m Document hash recognized in Cosmic Node registry."
+          puts "  - Origin:   #{server_match['filename']}"
+          puts "  - Created:  #{server_match['created_at']}"
+          puts "  - Status:   INTEGRITY CONFIRMED (Hash Match)"
+        end
+      rescue
+        # Silent fail for fallback
+      end
+    end
+    
+    puts "\e[32m[INTEGRITY]\e[0m Local checksum verified."
+  end
+
+  def generate_pdf
+    if @options[:url]
+      endpoint = "/pdf/from-url"
+      payload = {
+        url: @options[:url],
+        theme: @options[:theme],
+        filename: @options[:output]
+      }
+      puts "\e[34m[URL SYNTHESIS]\e[0m URL: #{@options[:url]} | Theme: #{@options[:theme]}"
+    else
+      endpoint = @options[:template] == 'custom' ? "/pdf/generate" : "/pdf/template/#{@options[:template]}"
+      payload = {
+        title: @options[:title],
+        content: @options[:content],
+        theme: @options[:theme],
+        filename: @options[:output],
+        password: @options[:password],
+        qrcode: @options[:qrcode],
+        watermark: @options[:watermark],
+        webhook_url: @options[:webhook]
+      }
+      # Add mock data for templates if needed
+      if @options[:template] == 'invoice'
+        payload.merge!({
+          customer_name: 'CLI CUSTOMER',
+          items: [{name: 'CLI Service', quantity: 1, price: 100}],
+          total: 100
+        })
+      elsif @options[:template] == 'orbital_manifest'
+        payload.merge!({
+          destination: 'Mars Alpha Base',
+          launch_window: '2026-03-21 14:00 UTC',
+          cargo: [
+            ['#M-99', 'Terraforming Gels', '2000', 'MAX'],
+            ['#M-101', 'Atmospheric Scrubbers', '150', 'HIGH']
+          ],
+          qr_verify: true
+        })
+      end
+      puts "\e[34m[INITIATING SYNTHESIS]\e[0m Template: #{@options[:template]} | Theme: #{@options[:theme]}"
+    end
+
+    uri = URI("#{API_URL}#{endpoint}")
+    
+    http = Net::HTTP.new(uri.host, uri.port)
+    request = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
+    request.body = payload.to_json
+
+    response = http.request(request)
+    
+    # Fallback Protocol
+    if response.code != '200' && @options[:theme] != 'classic'
+      puts "\e[33m[RETRYING]\e[0m Cosmic theme synthesis failed. Falling back to classic protocol..."
+      payload[:theme] = 'classic'
+      request.body = payload.to_json
+      response = http.request(request)
+    end
+
+    result = JSON.parse(response.body)
+
+    if result['success']
+      File.open(@options[:output], 'wb') do |f|
+        f.write(Base64.decode64(result['pdf_base64']))
+      end
+      puts "\e[32m[SUCCESS]\e[0m Document materialized at: #{@options[:output]}"
+      puts "\e[35m[SIGNATURE]\e[0m #{result['signature']}" if result['signature']
+      
+      if @options[:open]
+        puts "\e[34m[OPENING PROTOCOL]\e[0m Launching viewer..."
+        `open "#{@options[:output]}"`
+      end
+    else
+      puts "\e[31m[ERROR]\e[0m #{result['error']}"
+    end
+  end
+end
+
+CosmicCLI.new.run

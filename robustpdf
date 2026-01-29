@@ -1,0 +1,17 @@
+#!/bin/bash
+URL="$1"
+OUTPUT="${2:-output.pdf}"
+
+# Try themes in order of reliability
+for theme in classic nebula dark_matter blueprint; do
+  if pdfgen -u "$URL" -s "$theme" -o "$OUTPUT" >/dev/null 2>&1; then
+    if [ -f "$OUTPUT" ] && [ -s "$OUTPUT" ]; then
+      echo "Success: Generated with $theme theme"
+      exit 0
+    fi
+  fi
+  rm -f "$OUTPUT" 2>/dev/null
+done
+
+echo "Error: Could not generate PDF from $URL"
+exit 1

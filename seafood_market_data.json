@@ -1,0 +1,74 @@
+[
+  {
+    "id": "DS-001",
+    "name_en": "Dried Squid",
+    "name_th": "ปลาหมึกแห้ง",
+    "category": "Dried Seafood",
+    "sub_category": "Cephalopods",
+    "market_price_usd": 25.0,
+    "unit": "kg",
+    "stock_level": 500,
+    "margin": 0.20,
+    "description": "Premium sun-dried squid from the Gulf of Thailand."
+  },
+  {
+    "id": "DS-002",
+    "name_en": "Dried Shrimp",
+    "name_th": "กุ้งแห้ง",
+    "category": "Dried Seafood",
+    "sub_category": "Crustaceans",
+    "market_price_usd": 40.0,
+    "unit": "kg",
+    "stock_level": 200,
+    "margin": 0.25,
+    "description": "Large-sized dried shrimp, no artificial coloring."
+  },
+  {
+    "id": "DS-003",
+    "name_en": "Fish Maw",
+    "name_th": "กระเพาะปลา",
+    "category": "Dried Seafood",
+    "sub_category": "Specialty",
+    "market_price_usd": 150.0,
+    "unit": "kg",
+    "stock_level": 50,
+    "margin": 0.30,
+    "description": "Golden deep-sea fish maw, high collagen content."
+  },
+  {
+    "id": "DS-004",
+    "name_en": "Dried Scallops",
+    "name_th": "หอยเชลล์แห้ง",
+    "category": "Dried Seafood",
+    "sub_category": "Mollusks",
+    "market_price_usd": 80.0,
+    "unit": "kg",
+    "stock_level": 100,
+    "margin": 0.22,
+    "description": "Imported dried scallops, intense umami flavor."
+  },
+  {
+    "id": "PF-001",
+    "name_en": "Crispy Fish",
+    "name_th": "ปลากรอบ",
+    "category": "Processed Food",
+    "sub_category": "Snacks",
+    "market_price_usd": 15.0,
+    "unit": "kg",
+    "stock_level": 300,
+    "margin": 0.18,
+    "description": "Seasoned crispy small fish, high calcium."
+  },
+  {
+    "id": "PF-002",
+    "name_en": "Dried Seaweed",
+    "name_th": "สาหร่ายแห้ง",
+    "category": "Processed Food",
+    "sub_category": "Snacks",
+    "market_price_usd": 12.0,
+    "unit": "kg",
+    "stock_level": 450,
+    "margin": 0.15,
+    "description": "Roasted seaweed sheets, low calorie."
+  }
+]

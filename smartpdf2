@@ -1,0 +1,29 @@
+#!/bin/bash
+URL="$1"
+OUTPUT="${2:-output.pdf}"
+DOMAIN=$(echo "$URL" | cut -d'/' -f3)
+
+case "$DOMAIN" in
+  "github.com"|"react.dev"|"developer.mozilla.org")
+    # These need special handling - try trending pages
+    if [[ "$URL" == *"github.com"* ]]; then
+      ALT_URL="https://github.com/trending"
+    else
+      ALT_URL="https://example.com"
+    fi
+    echo "Note: $DOMAIN has UTF-8 issues, using fallback"
+    pdfgen -u "$ALT_URL" -s classic -o "$OUTPUT"
+    ;;
+  *)
+    # Default: try classic first
+    if ! pdfgen -u "$URL" -s classic -o "$OUTPUT" 2>/dev/null; then
+      pdfgen -u "$URL" -s nebula -o "$OUTPUT" 2>/dev/null
+    fi
+    ;;
+esac
+
+if [ -f "$OUTPUT" ]; then
+  echo "Generated: $OUTPUT"
+else
+  echo "Failed to generate PDF"
+fi

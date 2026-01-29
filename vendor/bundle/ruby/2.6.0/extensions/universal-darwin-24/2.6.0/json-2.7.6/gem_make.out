@@ -1,5 +1,5 @@
 current directory: /Users/stevejohn/Downloads/ruby-pdf-server/vendor/bundle/ruby/2.6.0/gems/json-2.7.6/ext/json/ext/generator
-/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/bin/ruby -I /System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib/ruby/2.6.0 -r ./siteconf20260126-32272-1be6op4.rb extconf.rb
+/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/bin/ruby -I /System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib/ruby/2.6.0 -r ./siteconf20260126-50743-1wl8rbi.rb extconf.rb
 checking for whether -std=c99 is accepted as CFLAGS... *** extconf.rb failed ***
 Could not create Makefile due to some reason, probably lack of necessary
 libraries and/or headers.  Check the mkmf.log file for more details.  You may

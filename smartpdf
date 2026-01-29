@@ -1,0 +1,38 @@
+#!/bin/bash
+# Smart PDF generator that auto-selects working theme
+URL="$1"
+OUTPUT="${2:-output.pdf}"
+
+echo "Testing themes for: $URL"
+
+# Try classic first
+if pdfgen -u "$URL" -s classic -o "$OUTPUT.tmp" 2>&1 | grep -q "SUCCESS"; then
+  mv "$OUTPUT.tmp" "$OUTPUT"
+  echo "✓ Generated with classic theme"
+  exit 0
+fi
+
+# Try nebula second  
+if pdfgen -u "$URL" -s nebula -o "$OUTPUT.tmp" 2>&1 | grep -q "SUCCESS"; then
+  mv "$OUTPUT.tmp" "$OUTPUT"
+  echo "✓ Generated with nebula theme"
+  exit 0
+fi
+
+# Try dark_matter third
+if pdfgen -u "$URL" -s dark_matter -o "$OUTPUT.tmp" 2>&1 | grep -q "SUCCESS"; then
+  mv "$OUTPUT.tmp" "$OUTPUT"
+  echo "✓ Generated with dark_matter theme"
+  exit 0
+fi
+
+# Try blueprint last
+if pdfgen -u "$URL" -s blueprint -o "$OUTPUT.tmp" 2>&1 | grep -q "SUCCESS"; then
+  mv "$OUTPUT.tmp" "$OUTPUT"
+  echo "✓ Generated with blueprint theme"
+  exit 0
+fi
+
+echo "✗ All themes failed for this URL"
+rm -f "$OUTPUT.tmp" 2>/dev/null
+exit 1

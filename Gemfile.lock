@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    chunky_png (1.4.0)
     dotenv (2.8.1)
     ffi (1.17.3)
     json (2.1.0)
@@ -25,7 +26,12 @@ GEM
       ffi (~> 1.0)
     rerun (0.14.0)
       listen (~> 3.0)
+    rqrcode (2.2.0)
+      chunky_png (~> 1.0)
+      rqrcode_core (~> 1.0)
+    rqrcode_core (1.2.0)
     ruby2_keywords (0.0.5)
+    rubyzip (2.4.1)
     sinatra (2.2.4)
       mustermann (~> 2.0)
       rack (~> 2.2)
@@ -43,6 +49,8 @@ DEPENDENCIES
   prawn (~> 2.1)
   prawn-table (~> 0.2)
   rerun (~> 0.13)
+  rqrcode (~> 2.2)
+  rubyzip (~> 2.3)
   sinatra (~> 2.0)
 
 BUNDLED WITH
